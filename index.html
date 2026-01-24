@@ -194,6 +194,28 @@
                 />
                 <label for="work-remote" class="text-sm font-semibold">Include work-from-home roles</label>
               </div>
+              <div>
+                <label for="usajobs-key" class="block text-sm font-semibold mb-2">USAJOBS API key</label>
+                <input
+                  id="usajobs-key"
+                  type="password"
+                  placeholder="Paste your key"
+                  class="w-full px-4 py-3 rounded-xl bg-white border border-black/10
+                         focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition"
+                />
+                <p class="mt-2 text-xs opacity-60">Get a free key at USAJOBS.gov.</p>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <label for="usajobs-email" class="block text-sm font-semibold mb-2">USAJOBS account email (required by API)</label>
+              <input
+                id="usajobs-email"
+                type="email"
+                placeholder="you@email.com"
+                class="w-full px-4 py-3 rounded-xl bg-white border border-black/10
+                       focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition"
+              />
             </div>
 
             <div class="mt-5 rounded-2xl bg-black/5 ring-1 ring-black/10 p-4 sm:p-5">
@@ -826,6 +848,16 @@
 
       if (!q.trim()) {
         setStatus('<p class="text-sm text-red-600 font-semibold">Add at least 1 passion or problem keyword first.</p>');
+        return;
+      }
+
+      if (!apiKey || !email) {
+        setStatus(`
+          <div class="rounded-2xl bg-white ring-1 ring-black/10 p-4">
+            <p class="text-sm font-extrabold text-red-600">Missing USAJOBS API credentials.</p>
+            <p class="text-xs opacity-70 mt-1">Add your USAJOBS API key and account email to pull .gov job titles.</p>
+          </div>
+        `);
         return;
       }
 
