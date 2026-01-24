@@ -49,27 +49,24 @@
   <style>
     html, body { height: 100%; }
     body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-    /* small polish for mobile selects */
     select { -webkit-appearance: none; appearance: none; }
+    input[type="range"] { accent-color: #77d770; }
   </style>
 </head>
 
 <body class="min-h-screen bg-cc-bg text-cc-text font-body">
   <div class="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
     <div class="mx-auto max-w-3xl">
-      <!-- Header (Chasing Change style) -->
+      <!-- Header -->
       <header class="mb-6 sm:mb-8">
         <div class="rounded-3xl overflow-hidden ring-1 ring-black/5 shadow-soft bg-white">
           <div class="relative p-6 sm:p-8">
-            <!-- background flair -->
             <div class="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-cc-outline/20 blur-3xl"></div>
             <div class="absolute -bottom-28 -left-28 w-80 h-80 rounded-full bg-cc-text/10 blur-3xl"></div>
 
             <div class="relative flex items-center justify-between gap-6">
-              <!-- LEFT: Brand + Title -->
               <div class="flex items-center gap-4">
                 <div class="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 flex items-center justify-center">
-                  <!-- swap src to your actual file/path -->
                   <img src="Chasing Change Logo2.png" alt="Chasing Change logo" class="w-full h-auto" />
                 </div>
 
@@ -81,12 +78,11 @@
                     5Ps Career Calculator
                   </h1>
                   <p class="mt-2 text-sm sm:text-base opacity-80 max-w-2xl">
-                    Weight what matters. Score your options. Pick a role that actually fits your life.
+                    Weight what matters. Pull real job titles. Score your options. Choose your lane.
                   </p>
                 </div>
               </div>
 
-              <!-- RIGHT: CTA -->
               <div class="hidden sm:flex flex-col items-center">
                 <a
                   href="#"
@@ -103,7 +99,6 @@
               </div>
             </div>
 
-            <!-- Mobile CTA -->
             <div class="sm:hidden mt-4">
               <a
                 href="#"
@@ -119,6 +114,125 @@
       </header>
 
       <main class="space-y-5 sm:space-y-6 pb-10">
+
+        <!-- NEW Card: Inputs (Passions / Problem / Pay scale) -->
+        <section class="rounded-3xl bg-cc-card shadow-soft ring-1 ring-black/5 overflow-hidden">
+          <div class="p-5 sm:p-8">
+            <div class="flex items-start gap-3 mb-6">
+              <div class="w-10 h-10 rounded-xl bg-cc-outline/15 ring-1 ring-cc-outline/40 flex items-center justify-center">
+                <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2v6" />
+                  <path d="M12 16v6" />
+                  <path d="M2 12h6" />
+                  <path d="M16 12h6" />
+                  <path d="M7 7l2 2" />
+                  <path d="M15 15l2 2" />
+                  <path d="M17 7l-2 2" />
+                  <path d="M9 15l-2 2" />
+                </svg>
+              </div>
+              <div>
+                <h2 class="text-lg sm:text-xl font-bold font-heading">0. Tell it what you want</h2>
+                <p class="text-sm opacity-80">
+                  Add your keywords + a target pay. Then we’ll pull generic occupation titles online and drop them into your table.
+                </p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="passions" class="block text-sm font-semibold mb-2">Passions (comma-separated)</label>
+                <input
+                  id="passions"
+                  type="text"
+                  placeholder="e.g. fitness, technology, film, teaching, writing"
+                  class="w-full px-4 py-3 rounded-xl bg-white border border-black/10
+                         focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition"
+                />
+                <p class="mt-2 text-xs opacity-60">Tip: 3–7 words max works best.</p>
+              </div>
+
+              <div>
+                <label for="problem-keywords" class="block text-sm font-semibold mb-2">Problems you like solving</label>
+                <input
+                  id="problem-keywords"
+                  type="text"
+                  placeholder="e.g. operations, organization, systems, coaching, analytics"
+                  class="w-full px-4 py-3 rounded-xl bg-white border border-black/10
+                         focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition"
+                />
+                <p class="mt-2 text-xs opacity-60">Think: “what I’m paid to fix.”</p>
+              </div>
+            </div>
+
+            <div class="mt-5 rounded-2xl bg-black/5 ring-1 ring-black/10 p-4 sm:p-5">
+              <div class="flex items-start justify-between gap-4 flex-wrap">
+                <div>
+                  <p class="text-sm font-extrabold font-heading">Pay target (slider + number)</p>
+                  <p class="text-xs opacity-70">Used as a *seniority hint* (titles don’t include salary).</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs opacity-70">$</span>
+                  <input
+                    id="pay-number"
+                    type="number"
+                    min="30000"
+                    max="300000"
+                    step="1000"
+                    value="80000"
+                    class="w-36 px-3 py-2 rounded-xl bg-white border border-black/10 text-sm
+                           focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition"
+                  />
+                </div>
+              </div>
+
+              <div class="mt-4">
+                <input
+                  id="pay-slider"
+                  type="range"
+                  min="30000"
+                  max="300000"
+                  step="1000"
+                  value="80000"
+                  class="w-full"
+                />
+                <div class="mt-2 flex items-center justify-between text-xs opacity-60">
+                  <span>$30k</span>
+                  <span>$300k</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4 flex flex-wrap gap-3">
+              <button
+                class="rounded-2xl px-5 py-3 text-sm font-extrabold bg-cc-outline text-cc-text shadow-outline hover:opacity-90 transition"
+                type="button"
+                id="pull-titles"
+              >
+                Pull job titles from the internet
+              </button>
+
+              <button
+                class="rounded-2xl px-5 py-3 text-sm font-extrabold bg-black/5 ring-1 ring-black/10 hover:opacity-90 transition"
+                type="button"
+                id="clear-suggested"
+              >
+                Clear suggested titles
+              </button>
+            </div>
+
+            <div class="mt-4" id="pull-status">
+              <p class="text-sm opacity-70">No titles pulled yet.</p>
+            </div>
+
+            <div class="mt-3 flex flex-wrap gap-2" id="suggested-chips"></div>
+
+            <p class="mt-4 text-xs opacity-60">
+              Data source: ESCO (European Commission) occupations search endpoint. If your browser blocks it, the tool will auto-fallback via a CORS proxy.
+            </p>
+          </div>
+        </section>
+
         <!-- Card: weights -->
         <section class="rounded-3xl bg-cc-card shadow-soft ring-1 ring-black/5 overflow-hidden">
           <div class="p-5 sm:p-8">
@@ -136,7 +250,6 @@
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-              <!-- Weight Select Template -->
               <div>
                 <label for="weight-passion" class="block text-sm font-semibold mb-2">Passion</label>
                 <select
@@ -292,6 +405,9 @@
   </div>
 
   <script>
+    // -----------------------------
+    // Existing table/scoring logic
+    // -----------------------------
     const careerBody = document.getElementById("career-body");
     const results = document.getElementById("results");
     const addRowButton = document.getElementById("add-row");
@@ -426,6 +542,216 @@
     calculateButton.addEventListener("click", calculateScores);
 
     defaultCareers.forEach((title) => addRow(title));
+
+    // ----------------------------------------
+    // NEW: Passions/Problem/Pay + Title Puller
+    // ----------------------------------------
+    const passionsEl = document.getElementById("passions");
+    const problemEl = document.getElementById("problem-keywords");
+    const paySlider = document.getElementById("pay-slider");
+    const payNumber = document.getElementById("pay-number");
+    const pullBtn = document.getElementById("pull-titles");
+    const clearSuggestedBtn = document.getElementById("clear-suggested");
+    const pullStatus = document.getElementById("pull-status");
+    const chipsWrap = document.getElementById("suggested-chips");
+
+    // Keep slider + numeric synced
+    const clamp = (n, min, max) => Math.min(max, Math.max(min, n));
+    const formatUSD = (n) => n.toLocaleString("en-US");
+
+    const syncPayFromSlider = () => {
+      payNumber.value = paySlider.value;
+    };
+    const syncPayFromNumber = () => {
+      const val = clamp(Number(payNumber.value || 80000), 30000, 300000);
+      payNumber.value = val;
+      paySlider.value = val;
+    };
+
+    paySlider.addEventListener("input", syncPayFromSlider);
+    payNumber.addEventListener("input", syncPayFromNumber);
+
+    const tokenize = (s) => {
+      return (s || "")
+        .split(/[,/|]+|\s+/)
+        .map(x => x.trim())
+        .filter(Boolean)
+        .filter(x => x.length >= 3);
+    };
+
+    const buildSearchQuery = () => {
+      const passions = tokenize(passionsEl.value);
+      const problems = tokenize(problemEl.value);
+
+      // Seniority hint from pay (since titles don't contain salary)
+      const pay = Number(payNumber.value || 80000);
+      const seniority =
+        pay >= 180000 ? ["director", "head", "lead", "principal"] :
+        pay >= 130000 ? ["senior", "lead"] :
+        pay >= 90000  ? ["specialist", "analyst", "manager"] :
+                        ["associate", "coordinator"];
+
+      // Build a compact query string
+      const all = [...passions, ...problems, ...seniority].slice(0, 10);
+      return all.join(" ");
+    };
+
+    const dedupe = (arr) => {
+      const seen = new Set();
+      return arr.filter(x => {
+        const k = x.toLowerCase();
+        if (seen.has(k)) return false;
+        seen.add(k);
+        return true;
+      });
+    };
+
+    // ESCO API search:
+    // https://ec.europa.eu/esco/api/search?text=...&language=en&type=occupation&limit=...
+    const ESCO_BASE = "https://ec.europa.eu/esco/api/search";
+
+    // CORS proxy fallback (only used if direct ESCO fetch fails)
+    const CORS_PROXY = "https://api.allorigins.win/raw?url=";
+
+    const safeJsonFetch = async (url) => {
+      const res = await fetch(url, { method: "GET" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    };
+
+    const extractTitlesFromEscoResponse = (data) => {
+      // ESCO returns HAL. The items are typically inside data._embedded.<something>.
+      // We'll be defensive and search for the first embedded array of objects.
+      const embedded = data && data._embedded ? data._embedded : null;
+      if (!embedded) return [];
+
+      const arrays = Object.values(embedded).filter(v => Array.isArray(v));
+      if (!arrays.length) return [];
+
+      const items = arrays[0];
+
+      const titles = items
+        .map((item) => {
+          // common label fields across ESCO payloads
+          return (
+            item.title ||
+            item.preferredLabel ||
+            item.preferredTerm ||
+            item.label ||
+            (item._links && item._links.self && item._links.self.title) ||
+            ""
+          );
+        })
+        .map(t => (typeof t === "string" ? t.trim() : ""))
+        .filter(Boolean);
+
+      return titles;
+    };
+
+    const renderChips = (titles) => {
+      chipsWrap.innerHTML = "";
+      if (!titles.length) return;
+
+      titles.forEach((t) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className =
+          "inline-flex items-center gap-2 px-3 py-2 rounded-2xl text-sm font-extrabold " +
+          "bg-white ring-1 ring-black/10 hover:opacity-90 transition";
+        btn.innerHTML = `<span>${t}</span><span class="opacity-50">＋</span>`;
+        btn.addEventListener("click", () => addRow(t));
+        chipsWrap.appendChild(btn);
+      });
+    };
+
+    const setStatus = (html) => {
+      pullStatus.innerHTML = html;
+    };
+
+    const pullTitles = async () => {
+      const q = buildSearchQuery();
+      const pay = Number(payNumber.value || 80000);
+
+      if (!q.trim()) {
+        setStatus('<p class="text-sm text-red-600 font-semibold">Add at least 1 passion or problem keyword first.</p>');
+        return;
+      }
+
+      setStatus(`
+        <div class="rounded-2xl bg-white ring-1 ring-black/10 p-4">
+          <p class="text-sm font-extrabold">Pulling titles…</p>
+          <p class="text-xs opacity-70 mt-1">Query: <span class="font-semibold">${q}</span> • Pay target: $${formatUSD(pay)}</p>
+        </div>
+      `);
+
+      const url = `${ESCO_BASE}?text=${encodeURIComponent(q)}&language=en&type=occupation&limit=12&full=false`;
+
+      try {
+        // 1) Try direct
+        const data = await safeJsonFetch(url);
+        let titles = extractTitlesFromEscoResponse(data);
+        titles = dedupe(titles).slice(0, 12);
+
+        if (!titles.length) {
+          setStatus('<p class="text-sm opacity-70">No titles found. Try fewer keywords or more general words.</p>');
+          renderChips([]);
+          return;
+        }
+
+        setStatus(`
+          <div class="rounded-2xl bg-white ring-1 ring-black/10 p-4">
+            <p class="text-sm font-extrabold">Found ${titles.length} titles</p>
+            <p class="text-xs opacity-70 mt-1">Click a chip to add it as a row (or re-run with different keywords).</p>
+          </div>
+        `);
+        renderChips(titles);
+        return;
+
+      } catch (err1) {
+        // 2) Fallback via CORS proxy
+        try {
+          const proxied = CORS_PROXY + encodeURIComponent(url);
+          const data2 = await safeJsonFetch(proxied);
+          let titles = extractTitlesFromEscoResponse(data2);
+          titles = dedupe(titles).slice(0, 12);
+
+          if (!titles.length) {
+            setStatus('<p class="text-sm opacity-70">No titles found (proxy). Try fewer keywords or more general words.</p>');
+            renderChips([]);
+            return;
+          }
+
+          setStatus(`
+            <div class="rounded-2xl bg-white ring-1 ring-black/10 p-4">
+              <p class="text-sm font-extrabold">Found ${titles.length} titles (proxy fallback)</p>
+              <p class="text-xs opacity-70 mt-1">Your browser likely blocked direct ESCO access (CORS). Chips still work.</p>
+            </div>
+          `);
+          renderChips(titles);
+          return;
+
+        } catch (err2) {
+          setStatus(`
+            <div class="rounded-2xl bg-white ring-1 ring-black/10 p-4">
+              <p class="text-sm font-extrabold text-red-600">Couldn’t pull titles.</p>
+              <p class="text-xs opacity-70 mt-1">
+                Error: ${String(err2 && err2.message ? err2.message : err2)}
+              </p>
+              <p class="text-xs opacity-70 mt-2">
+                Try again later, simplify your keywords, or run this from a local dev server (sometimes GitHub Pages + CORS gets picky).
+              </p>
+            </div>
+          `);
+          renderChips([]);
+        }
+      }
+    };
+
+    pullBtn.addEventListener("click", pullTitles);
+    clearSuggestedBtn.addEventListener("click", () => {
+      chipsWrap.innerHTML = "";
+      setStatus('<p class="text-sm opacity-70">Suggested titles cleared.</p>');
+    });
   </script>
 </body>
 </html>
