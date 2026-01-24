@@ -1,0 +1,431 @@
++<!DOCTYPE html>
++<html lang="en">
++<head>
++  <meta charset="UTF-8" />
++  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
++  <title>5Ps Career Calculator</title>
++  <link rel="preconnect" href="https://fonts.googleapis.com" />
++  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
++  <link
++    href="https://fonts.googleapis.com/css2?family=MuseoModerno:wght@500;700&family=Raleway:wght@500;700&family=Muli:wght@300;400;600&display=swap"
++    rel="stylesheet"
++  />
++  <style>
++    :root {
++      --bg: #f5f5f7;
++      --text: #071f35;
++      --accent: #77d770;
++      --card: #ffffff;
++      --muted: #5b6b7a;
++      --border: #d7dde3;
++      --shadow: 0 10px 30px rgba(7, 31, 53, 0.08);
++    }
++
++    * {
++      box-sizing: border-box;
++    }
++
++    body {
++      margin: 0;
++      font-family: "Muli", system-ui, sans-serif;
++      background: var(--bg);
++      color: var(--text);
++      line-height: 1.5;
++    }
++
++    header {
++      padding: 48px 20px 24px;
++      text-align: center;
++    }
++
++    header h1 {
++      margin: 0 0 12px;
++      font-family: "MuseoModerno", cursive;
++      font-size: clamp(2rem, 4vw, 3rem);
++      color: var(--text);
++    }
++
++    header p {
++      margin: 0 auto;
++      max-width: 720px;
++      font-size: 1.05rem;
++      color: var(--muted);
++    }
++
++    main {
++      max-width: 1100px;
++      margin: 0 auto 80px;
++      padding: 0 20px;
++      display: grid;
++      gap: 24px;
++    }
++
++    .card {
++      background: var(--card);
++      border-radius: 18px;
++      padding: 24px;
++      box-shadow: var(--shadow);
++      border: 1px solid var(--border);
++    }
++
++    h2 {
++      font-family: "Raleway", sans-serif;
++      margin: 0 0 16px;
++      font-size: 1.4rem;
++    }
++
++    .weight-grid {
++      display: grid;
++      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
++      gap: 16px;
++    }
++
++    label {
++      display: block;
++      font-weight: 600;
++      margin-bottom: 8px;
++    }
++
++    select,
++    input[type="text"],
++    input[type="number"] {
++      width: 100%;
++      padding: 10px 12px;
++      border-radius: 10px;
++      border: 1px solid var(--border);
++      font-family: inherit;
++      font-size: 0.95rem;
++      color: var(--text);
++      background: #fff;
++    }
++
++    .table-wrapper {
++      overflow-x: auto;
++    }
++
++    table {
++      width: 100%;
++      border-collapse: collapse;
++      min-width: 720px;
++    }
++
++    th,
++    td {
++      padding: 12px;
++      text-align: left;
++      border-bottom: 1px solid var(--border);
++      vertical-align: top;
++    }
++
++    th {
++      font-family: "Raleway", sans-serif;
++      font-size: 0.95rem;
++      color: var(--muted);
++    }
++
++    .actions {
++      display: flex;
++      flex-wrap: wrap;
++      gap: 12px;
++      margin-top: 16px;
++    }
++
++    button {
++      border: none;
++      border-radius: 999px;
++      padding: 10px 20px;
++      font-family: "Raleway", sans-serif;
++      font-weight: 600;
++      font-size: 0.95rem;
++      cursor: pointer;
++    }
++
++    .primary {
++      background: var(--accent);
++      color: var(--text);
++      box-shadow: 0 8px 20px rgba(119, 215, 112, 0.3);
++    }
++
++    .secondary {
++      background: #e7ebef;
++      color: var(--text);
++    }
++
++    .result-list {
++      display: grid;
++      gap: 12px;
++    }
++
++    .result-item {
++      padding: 16px;
++      border-radius: 14px;
++      border: 1px solid var(--border);
++      background: #fefefe;
++      display: flex;
++      justify-content: space-between;
++      align-items: center;
++    }
++
++    .result-item strong {
++      font-family: "Raleway", sans-serif;
++      font-size: 1rem;
++    }
++
++    .badge {
++      background: rgba(119, 215, 112, 0.2);
++      color: var(--text);
++      padding: 6px 12px;
++      border-radius: 999px;
++      font-weight: 600;
++    }
++
++    .helper {
++      color: var(--muted);
++      font-size: 0.9rem;
++      margin-top: 6px;
++    }
++
++    .score-inputs {
++      display: grid;
++      gap: 6px;
++    }
++
++    .score-inputs span {
++      font-size: 0.8rem;
++      color: var(--muted);
++    }
++
++    @media (max-width: 720px) {
++      header {
++        padding-top: 32px;
++      }
++
++      .result-item {
++        flex-direction: column;
++        align-items: flex-start;
++        gap: 8px;
++      }
++    }
++  </style>
++</head>
++<body>
++  <header>
++    <h1>5Ps Career Calculator</h1>
++    <p>
++      Set how important each “P” is to you, then score potential careers on Passion, Place, People,
++      Problem, and Pay. The weights multiply each score so you can rank the roles that best fit you.
++    </p>
++  </header>
++
++  <main>
++    <section class="card" aria-labelledby="weight-title">
++      <h2 id="weight-title">1. Choose your 5P weights</h2>
++      <div class="weight-grid">
++        <div>
++          <label for="weight-passion">Passion weight</label>
++          <select id="weight-passion">
++            <option value="1">1 - Not that important</option>
++            <option value="2" selected>2 - Neutral</option>
++            <option value="3">3 - Very important</option>
++          </select>
++        </div>
++        <div>
++          <label for="weight-place">Place weight</label>
++          <select id="weight-place">
++            <option value="1">1 - Not that important</option>
++            <option value="2" selected>2 - Neutral</option>
++            <option value="3">3 - Very important</option>
++          </select>
++        </div>
++        <div>
++          <label for="weight-people">People weight</label>
++          <select id="weight-people">
++            <option value="1">1 - Not that important</option>
++            <option value="2" selected>2 - Neutral</option>
++            <option value="3">3 - Very important</option>
++          </select>
++        </div>
++        <div>
++          <label for="weight-problem">Problem weight</label>
++          <select id="weight-problem">
++            <option value="1">1 - Not that important</option>
++            <option value="2" selected>2 - Neutral</option>
++            <option value="3">3 - Very important</option>
++          </select>
++        </div>
++        <div>
++          <label for="weight-pay">Pay weight</label>
++          <select id="weight-pay">
++            <option value="1">1 - Not that important</option>
++            <option value="2" selected>2 - Neutral</option>
++            <option value="3">3 - Very important</option>
++          </select>
++        </div>
++      </div>
++      <p class="helper">Weights act as multipliers for each category.</p>
++    </section>
++
++    <section class="card" aria-labelledby="career-title">
++      <h2 id="career-title">2. Score potential careers</h2>
++      <div class="table-wrapper">
++        <table>
++          <thead>
++            <tr>
++              <th>Job Title</th>
++              <th>Passion (1-5)</th>
++              <th>Place (1-5)</th>
++              <th>People (1-5)</th>
++              <th>Problem (1-5)</th>
++              <th>Pay (1-5)</th>
++            </tr>
++          </thead>
++          <tbody id="career-body"></tbody>
++        </table>
++      </div>
++      <div class="actions">
++        <button class="secondary" type="button" id="add-row">Add another career</button>
++        <button class="primary" type="button" id="calculate">Calculate ideal career</button>
++      </div>
++      <p class="helper">
++        Rate each category from 1 (low fit) to 5 (high fit) for every job title.
++      </p>
++    </section>
++
++    <section class="card" aria-labelledby="result-title">
++      <h2 id="result-title">3. Your ranked results</h2>
++      <div id="results" class="result-list">
++        <p class="helper">Add careers and click “Calculate” to see your top matches.</p>
++      </div>
++    </section>
++  </main>
++
++  <script>
++    const careerBody = document.getElementById("career-body");
++    const results = document.getElementById("results");
++    const addRowButton = document.getElementById("add-row");
++    const calculateButton = document.getElementById("calculate");
++
++    const weightSelectors = {
++      passion: document.getElementById("weight-passion"),
++      place: document.getElementById("weight-place"),
++      people: document.getElementById("weight-people"),
++      problem: document.getElementById("weight-problem"),
++      pay: document.getElementById("weight-pay"),
++    };
++
++    const defaultCareers = [
++      "Product Designer",
++      "Data Analyst",
++      "Wellness Coach",
++    ];
++
++    const createScoreInput = (labelText) => {
++      const wrapper = document.createElement("div");
++      wrapper.className = "score-inputs";
++
++      const input = document.createElement("input");
++      input.type = "number";
++      input.min = "1";
++      input.max = "5";
++      input.value = "3";
++
++      const label = document.createElement("span");
++      label.textContent = labelText;
++
++      wrapper.append(input, label);
++      return { wrapper, input };
++    };
++
++    const addRow = (title = "") => {
++      const row = document.createElement("tr");
++
++      const titleCell = document.createElement("td");
++      const titleInput = document.createElement("input");
++      titleInput.type = "text";
++      titleInput.placeholder = "e.g. UX Researcher";
++      titleInput.value = title;
++      titleCell.appendChild(titleInput);
++
++      const categories = ["Passion", "Place", "People", "Problem", "Pay"];
++      const inputs = [];
++
++      categories.forEach((category) => {
++        const cell = document.createElement("td");
++        const { wrapper, input } = createScoreInput(`Score for ${category}`);
++        cell.appendChild(wrapper);
++        inputs.push(input);
++        row.appendChild(cell);
++      });
++
++      row.prepend(titleCell);
++      row.dataset.inputs = inputs.map((_, index) => index).join(",");
++      row._inputs = inputs;
++      row._titleInput = titleInput;
++
++      careerBody.appendChild(row);
++    };
++
++    const getWeights = () => {
++      return {
++        passion: Number(weightSelectors.passion.value),
++        place: Number(weightSelectors.place.value),
++        people: Number(weightSelectors.people.value),
++        problem: Number(weightSelectors.problem.value),
++        pay: Number(weightSelectors.pay.value),
++      };
++    };
++
++    const calculateScores = () => {
++      const weights = getWeights();
++      const rows = Array.from(careerBody.querySelectorAll("tr"));
++      const resultsData = rows
++        .map((row) => {
++          const title = row._titleInput.value.trim();
++          const scores = row._inputs.map((input) => Number(input.value || 0));
++          const weightedScore =
++            scores[0] * weights.passion +
++            scores[1] * weights.place +
++            scores[2] * weights.people +
++            scores[3] * weights.problem +
++            scores[4] * weights.pay;
++
++          return {
++            title: title || "Untitled Career",
++            scores,
++            weightedScore,
++          };
++        })
++        .filter((item) => item.title !== "");
++
++      results.innerHTML = "";
++
++      if (!resultsData.length) {
++        results.innerHTML = '<p class="helper">Add at least one career to see results.</p>';
++        return;
++      }
++
++      resultsData
++        .sort((a, b) => b.weightedScore - a.weightedScore)
++        .forEach((item, index) => {
++          const resultItem = document.createElement("div");
++          resultItem.className = "result-item";
++
++          const title = document.createElement("strong");
++          title.textContent = `${index + 1}. ${item.title}`;
++
++          const badge = document.createElement("div");
++          badge.className = "badge";
++          badge.textContent = `Score: ${item.weightedScore}`;
++
++          resultItem.append(title, badge);
++          results.appendChild(resultItem);
++        });
++    };
++
++    addRowButton.addEventListener("click", () => addRow());
++    calculateButton.addEventListener("click", calculateScores);
++
++    defaultCareers.forEach((title) => addRow(title));
++  </script>
++</body>
++</html>
