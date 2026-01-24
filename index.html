@@ -78,7 +78,7 @@
                     5Ps Career Calculator
                   </h1>
                   <p class="mt-2 text-sm sm:text-base opacity-80 max-w-2xl">
-                    Weight what matters. Pull real job titles. Score your options. Choose your lane.
+                    Weight what matters. Pull real job titles. Score your options. Choose your career.
                   </p>
                 </div>
               </div>
@@ -186,6 +186,14 @@
                          focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition"
                 />
               </div>
+              <div class="flex items-center gap-3 rounded-2xl bg-black/5 ring-1 ring-black/10 px-4 py-3">
+                <input
+                  id="work-remote"
+                  type="checkbox"
+                  class="h-4 w-4 accent-cc-outline"
+                />
+                <label for="work-remote" class="text-sm font-semibold">Include work-from-home roles</label>
+              </div>
               <div>
                 <label for="usajobs-key" class="block text-sm font-semibold mb-2">USAJOBS API key</label>
                 <input
@@ -273,7 +281,7 @@
             <div class="mt-3 flex flex-wrap gap-2" id="suggested-chips"></div>
 
             <p class="mt-4 text-xs opacity-60">
-              Data source: USAJOBS.gov API (requires a free API key + account email).
+              Data sources: Wikipedia occupations list (titles) + Salary.com (pay ranges). Some browsers may block cross-site requests without the proxy fallback.
             </p>
           </div>
         </section>
@@ -548,7 +556,15 @@
       pay: Number(weightSelectors.pay.value),
     });
 
+    const getSalaryMax = (salaryRange) => {
+      if (!salaryRange) return null;
+      const match = salaryRange.match(/\$([\d,]+)\s*-\s*\$([\d,]+)/);
+      if (!match) return null;
+      return Number(match[2].replace(/,/g, ""));
+    };
+
     const calculateScores = () => {
+      sortCareerRows();
       const weights = getWeights();
       const rows = Array.from(careerBody.querySelectorAll("tr"));
 
@@ -556,13 +572,15 @@
         .map((row) => {
           const title = row._titleInput.value.trim();
           const scores = row._inputs.map((input) => Number(input.value || 0));
+          const salaryMax = getSalaryMax(row._salaryInput.value);
+          const payContribution = salaryMax ? salaryMax * weights.pay : scores[4] * weights.pay;
 
           const weightedScore =
             scores[0] * weights.passion +
             scores[1] * weights.place +
             scores[2] * weights.people +
             scores[3] * weights.problem +
-            scores[4] * weights.pay;
+            payContribution;
 
           return {
             title: title || "Untitled Career",
@@ -596,7 +614,7 @@
           badge.className =
             "inline-flex items-center justify-center px-4 py-2 rounded-2xl " +
             "bg-cc-outline/20 ring-1 ring-cc-outline/30 font-extrabold text-sm";
-          badge.textContent = `Score: ${item.weightedScore}`;
+          badge.textContent = `Weighted Score: ${Math.round(item.weightedScore).toLocaleString("en-US")}`;
 
           card.append(left, badge);
           results.appendChild(card);
@@ -615,8 +633,7 @@
     const problemEl = document.getElementById("problem-statement");
     const cityEl = document.getElementById("location-city");
     const stateEl = document.getElementById("location-state");
-    const usaJobsKeyEl = document.getElementById("usajobs-key");
-    const usaJobsEmailEl = document.getElementById("usajobs-email");
+    const remoteEl = document.getElementById("work-remote");
     const paySlider = document.getElementById("pay-slider");
     const payNumber = document.getElementById("pay-number");
     const pullBtn = document.getElementById("pull-titles");
@@ -660,10 +677,14 @@
         pay >= 90000  ? ["specialist", "analyst", "manager"] :
                         ["associate", "coordinator"];
 
+      const remote = remoteEl.checked ? ["remote", "work", "home"] : [];
+
       // Build a compact query string
-      const all = [...passions, ...problems, ...seniority].slice(0, 10);
+      const all = [...passions, ...problems, ...seniority, ...remote].slice(0, 12);
       return all.join(" ");
     };
+
+    const buildSearchTokens = () => tokenize(buildSearchQuery());
 
     const buildLocationQuery = () => {
       const city = (cityEl.value || "").trim();
@@ -684,47 +705,93 @@
       });
     };
 
-    // USAJOBS API search:
-    // https://data.usajobs.gov/api/search?Keyword=...&LocationName=...&ResultsPerPage=...
-    const USAJOBS_BASE = "https://data.usajobs.gov/api/search";
+    // Wikipedia occupations list:
+    // https://en.wikipedia.org/wiki/List_of_occupations
+    const WIKI_OCCUPATIONS = "https://en.wikipedia.org/wiki/List_of_occupations";
+    const CORS_PROXY = "https://api.allorigins.win/raw?url=";
 
-    const safeJsonFetch = async (url, headers) => {
-      const res = await fetch(url, { method: "GET", headers });
+    const safeTextFetch = async (url) => {
+      const res = await fetch(url, { method: "GET" });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return await res.json();
+      return await res.text();
     };
 
-    const extractTitlesFromUsaJobsResponse = (data) => {
-      const items =
-        data &&
-        data.SearchResult &&
-        Array.isArray(data.SearchResult.SearchResultItems)
-          ? data.SearchResult.SearchResultItems
-          : [];
+    const fetchOccupationTitles = async () => {
+      let html;
+      try {
+        html = await safeTextFetch(WIKI_OCCUPATIONS);
+      } catch (err) {
+        html = await safeTextFetch(`${CORS_PROXY}${encodeURIComponent(WIKI_OCCUPATIONS)}`);
+      }
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, "text/html");
+      const items = Array.from(doc.querySelectorAll("#mw-content-text li"));
 
       return items
-        .map((item) => {
-          const descriptor = item.MatchedObjectDescriptor || {};
-          const title = (descriptor.PositionTitle || "").trim();
-          const remuneration = Array.isArray(descriptor.PositionRemuneration)
-            ? descriptor.PositionRemuneration[0] || {}
-            : {};
-          const minimum = remuneration.MinimumRange;
-          const maximum = remuneration.MaximumRange;
-          const rateInterval = remuneration.RateIntervalCode;
+        .map((li) => li.textContent || "")
+        .map((text) => text.replace(/\s+/g, " ").trim())
+        .filter((text) => text && text.length <= 60)
+        .filter((text) => !text.includes("List of"))
+        .filter((text) => !text.includes("Wikipedia"));
+    };
 
-          let salaryRange = "";
-          if (minimum && maximum) {
-            salaryRange = `$${Number(minimum).toLocaleString("en-US")} - $${Number(maximum).toLocaleString("en-US")}`;
-            if (rateInterval) salaryRange += ` (${rateInterval})`;
-          }
+    const slugify = (text) =>
+      text
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)+/g, "");
 
-          return {
-            title,
-            salaryRange,
-          };
-        })
-        .filter((item) => item.title);
+    const parseSalaryRange = (text) => {
+      if (!text) return "";
+      const match =
+        text.match(/\$[\d,]+\s*-\s*\$[\d,]+/) ||
+        text.match(/\$[\d,]+\s*to\s*\$[\d,]+/i);
+      return match ? match[0].replace(/\s+to\s+/i, " - ") : "";
+    };
+
+    const salaryCache = new Map();
+
+    const fetchSalaryRange = async (title, location) => {
+      const cacheKey = `${title}__${location}`;
+      if (salaryCache.has(cacheKey)) return salaryCache.get(cacheKey);
+
+      const slug = slugify(title);
+      const urlBase = `https://www.salary.com/research/salary/listing/${slug}-salary`;
+      const url = location ? `${urlBase}?location=${encodeURIComponent(location)}` : urlBase;
+
+      let html = "";
+      try {
+        html = await safeTextFetch(url);
+      } catch (err) {
+        html = await safeTextFetch(`${CORS_PROXY}${encodeURIComponent(url)}`);
+      }
+
+      const range = parseSalaryRange(html);
+      const result = range || "Salary data unavailable";
+      salaryCache.set(cacheKey, result);
+      return result;
+    };
+
+    const mapWithConcurrency = async (items, mapper, limit = 4) => {
+      const results = [];
+      const queue = [...items];
+      const workers = Array.from({ length: limit }, async () => {
+        while (queue.length) {
+          const current = queue.shift();
+          const mapped = await mapper(current);
+          results.push(mapped);
+        }
+      });
+      await Promise.all(workers);
+      return results;
+    };
+
+    const scoreTitleMatch = (title, tokens) => {
+      const titleTokens = tokenize(title.toLowerCase());
+      if (!tokens.length) return 0;
+      const overlap = titleTokens.filter((t) => tokens.includes(t)).length;
+      return overlap / tokens.length;
     };
 
     const renderChips = (titles) => {
@@ -751,12 +818,33 @@
       pullStatus.innerHTML = html;
     };
 
+    function computeRowSortScore(row, tokens, targetPay) {
+      const title = row._titleInput.value.trim();
+      const scores = row._inputs.map((input) => Number(input.value || 0));
+      const salaryMax = getSalaryMax(row._salaryInput.value);
+
+      const keywordScore = scoreTitleMatch(title, tokens) * 5;
+      const salaryScore = salaryMax
+        ? Math.max(0, 1 - Math.abs(salaryMax - targetPay) / targetPay) * 5
+        : scores[4];
+
+      return scores[0] + scores[1] + scores[2] + scores[3] + salaryScore + keywordScore;
+    }
+
+    function sortCareerRows() {
+      const tokens = buildSearchTokens();
+      const targetPay = Number(payNumber.value || 80000);
+      const rows = Array.from(careerBody.querySelectorAll("tr"));
+      rows
+        .sort((a, b) => computeRowSortScore(b, tokens, targetPay) - computeRowSortScore(a, tokens, targetPay))
+        .forEach((row) => careerBody.appendChild(row));
+    }
+
     const pullTitles = async () => {
       const q = buildSearchQuery();
       const pay = Number(payNumber.value || 80000);
       const location = buildLocationQuery();
-      const apiKey = (usaJobsKeyEl.value || "").trim();
-      const email = (usaJobsEmailEl.value || "").trim();
+      const tokens = buildSearchTokens();
 
       if (!q.trim()) {
         setStatus('<p class="text-sm text-red-600 font-semibold">Add at least 1 passion or problem keyword first.</p>');
@@ -780,18 +868,26 @@
         </div>
       `);
 
-      const url = `${USAJOBS_BASE}?Keyword=${encodeURIComponent(q)}&ResultsPerPage=12${location ? `&LocationName=${encodeURIComponent(location)}` : ""}`;
-
       try {
-        const data = await safeJsonFetch(url, {
-          "Authorization-Key": apiKey,
-          "User-Agent": email,
-          "Host": "data.usajobs.gov",
-        });
-        let titles = extractTitlesFromUsaJobsResponse(data);
-        titles = dedupe(titles).slice(0, 12);
+        const rawTitles = await fetchOccupationTitles();
+        const scored = dedupe(rawTitles)
+          .map((title) => ({
+            title,
+            relevance: scoreTitleMatch(title, tokens),
+          }))
+          .sort((a, b) => b.relevance - a.relevance)
+          .slice(0, 12);
 
-        if (!titles.length) {
+        const hydrated = await mapWithConcurrency(
+          scored,
+          async (item) => {
+            const salaryRange = await fetchSalaryRange(item.title, location);
+            return { ...item, salaryRange };
+          },
+          4
+        );
+
+        if (!hydrated.length) {
           setStatus('<p class="text-sm opacity-70">No titles found. Try fewer keywords or more general words.</p>');
           renderChips([]);
           return;
@@ -799,11 +895,11 @@
 
         setStatus(`
           <div class="rounded-2xl bg-white ring-1 ring-black/10 p-4">
-            <p class="text-sm font-extrabold">Found ${titles.length} titles</p>
+            <p class="text-sm font-extrabold">Found ${hydrated.length} titles</p>
             <p class="text-xs opacity-70 mt-1">Click a chip to add it as a row (or re-run with different keywords).</p>
           </div>
         `);
-        renderChips(titles);
+        renderChips(hydrated);
         return;
 
       } catch (err1) {
@@ -814,7 +910,7 @@
               Error: ${String(err1 && err1.message ? err1.message : err1)}
             </p>
             <p class="text-xs opacity-70 mt-2">
-              Check your USAJOBS API key + email, or simplify your keywords.
+              Try again later or simplify your keywords.
             </p>
           </div>
         `);
