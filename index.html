@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;600;700&family=Museo+Moderno:wght@500;700&family=Raleway:wght@500;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Muli:wght@300;400;600;700&family=Museo+Moderno:wght@500;700&family=Raleway:wght@500;700;800&display=swap"
     rel="stylesheet"
   />
 
@@ -32,7 +32,7 @@
             },
           },
           fontFamily: {
-            body: ["Mulish", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+            body: ["Muli", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
             heading: ["Raleway", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
             brand: ["Museo Moderno", "Raleway", "sans-serif"],
           },
@@ -152,17 +152,62 @@
                 <p class="mt-2 text-xs opacity-60">Tip: 3–7 words max works best.</p>
               </div>
 
+              <div class="sm:col-span-2">
+                <label for="problem-statement" class="block text-sm font-semibold mb-2">Problem you like solving</label>
+                <textarea
+                  id="problem-statement"
+                  rows="3"
+                  placeholder="e.g. Helping teams streamline operations, clarify priorities, and build repeatable systems."
+                  class="w-full px-4 py-3 rounded-xl bg-white border border-black/10
+                         focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition"
+                ></textarea>
+                <p class="mt-2 text-xs opacity-60">Describe the type of problem. We’ll turn it into searchable keywords.</p>
+              </div>
+            </div>
+
+            <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label for="problem-keywords" class="block text-sm font-semibold mb-2">Problems you like solving</label>
+                <label for="location-city" class="block text-sm font-semibold mb-2">Target city</label>
                 <input
-                  id="problem-keywords"
+                  id="location-city"
                   type="text"
-                  placeholder="e.g. operations, organization, systems, coaching, analytics"
+                  placeholder="e.g. Austin"
                   class="w-full px-4 py-3 rounded-xl bg-white border border-black/10
                          focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition"
                 />
-                <p class="mt-2 text-xs opacity-60">Think: “what I’m paid to fix.”</p>
               </div>
+              <div>
+                <label for="location-state" class="block text-sm font-semibold mb-2">State</label>
+                <input
+                  id="location-state"
+                  type="text"
+                  placeholder="e.g. TX"
+                  class="w-full px-4 py-3 rounded-xl bg-white border border-black/10
+                         focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition"
+                />
+              </div>
+              <div>
+                <label for="usajobs-key" class="block text-sm font-semibold mb-2">USAJOBS API key</label>
+                <input
+                  id="usajobs-key"
+                  type="password"
+                  placeholder="Paste your key"
+                  class="w-full px-4 py-3 rounded-xl bg-white border border-black/10
+                         focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition"
+                />
+                <p class="mt-2 text-xs opacity-60">Get a free key at USAJOBS.gov.</p>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <label for="usajobs-email" class="block text-sm font-semibold mb-2">USAJOBS account email (required by API)</label>
+              <input
+                id="usajobs-email"
+                type="email"
+                placeholder="you@email.com"
+                class="w-full px-4 py-3 rounded-xl bg-white border border-black/10
+                       focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition"
+              />
             </div>
 
             <div class="mt-5 rounded-2xl bg-black/5 ring-1 ring-black/10 p-4 sm:p-5">
@@ -228,7 +273,7 @@
             <div class="mt-3 flex flex-wrap gap-2" id="suggested-chips"></div>
 
             <p class="mt-4 text-xs opacity-60">
-              Data source: ESCO (European Commission) occupations search endpoint. If your browser blocks it, the tool will auto-fallback via a CORS proxy.
+              Data source: USAJOBS.gov API (requires a free API key + account email).
             </p>
           </div>
         </section>
@@ -347,6 +392,7 @@
                     <th class="p-3 font-heading font-bold opacity-70">People</th>
                     <th class="p-3 font-heading font-bold opacity-70">Problem</th>
                     <th class="p-3 font-heading font-bold opacity-70">Pay</th>
+                    <th class="p-3 font-heading font-bold opacity-70">Salary Range</th>
                   </tr>
                 </thead>
                 <tbody id="career-body" class="[&>tr:not(:last-child)]:border-b [&>tr]:border-black/10"></tbody>
@@ -421,7 +467,7 @@
       pay: document.getElementById("weight-pay"),
     };
 
-    const defaultCareers = ["Product Designer", "Data Analyst", "Wellness Coach"];
+    const defaultCareers = [];
 
     const createScoreInput = () => {
       const input = document.createElement("input");
@@ -447,7 +493,19 @@
       return input;
     };
 
-    const addRow = (title = "") => {
+    const createSalaryInput = (value = "") => {
+      const input = document.createElement("input");
+      input.type = "text";
+      input.placeholder = "—";
+      input.value = value;
+      input.readOnly = true;
+      input.className =
+        "w-full px-3 py-2 rounded-xl bg-white border border-black/10 text-sm " +
+        "focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition";
+      return input;
+    };
+
+    const addRow = (title = "", salaryRange = "") => {
       const row = document.createElement("tr");
       row.className = "align-top";
 
@@ -471,6 +529,13 @@
       row.prepend(titleCell);
       row._inputs = inputs;
       row._titleInput = titleInput;
+
+      const salaryCell = document.createElement("td");
+      salaryCell.className = "p-3";
+      const salaryInput = createSalaryInput(salaryRange);
+      salaryCell.appendChild(salaryInput);
+      row.appendChild(salaryCell);
+      row._salaryInput = salaryInput;
 
       careerBody.appendChild(row);
     };
@@ -547,7 +612,11 @@
     // NEW: Passions/Problem/Pay + Title Puller
     // ----------------------------------------
     const passionsEl = document.getElementById("passions");
-    const problemEl = document.getElementById("problem-keywords");
+    const problemEl = document.getElementById("problem-statement");
+    const cityEl = document.getElementById("location-city");
+    const stateEl = document.getElementById("location-state");
+    const usaJobsKeyEl = document.getElementById("usajobs-key");
+    const usaJobsEmailEl = document.getElementById("usajobs-email");
     const paySlider = document.getElementById("pay-slider");
     const payNumber = document.getElementById("pay-number");
     const pullBtn = document.getElementById("pull-titles");
@@ -596,70 +665,84 @@
       return all.join(" ");
     };
 
+    const buildLocationQuery = () => {
+      const city = (cityEl.value || "").trim();
+      const state = (stateEl.value || "").trim();
+      if (city && state) return `${city}, ${state}`;
+      return city || state || "";
+    };
+
     const dedupe = (arr) => {
       const seen = new Set();
-      return arr.filter(x => {
-        const k = x.toLowerCase();
-        if (seen.has(k)) return false;
-        seen.add(k);
+      return arr.filter((item) => {
+        const title = typeof item === "string" ? item : item.title || "";
+        const key = title.toLowerCase();
+        if (!key) return false;
+        if (seen.has(key)) return false;
+        seen.add(key);
         return true;
       });
     };
 
-    // ESCO API search:
-    // https://ec.europa.eu/esco/api/search?text=...&language=en&type=occupation&limit=...
-    const ESCO_BASE = "https://ec.europa.eu/esco/api/search";
+    // USAJOBS API search:
+    // https://data.usajobs.gov/api/search?Keyword=...&LocationName=...&ResultsPerPage=...
+    const USAJOBS_BASE = "https://data.usajobs.gov/api/search";
 
-    // CORS proxy fallback (only used if direct ESCO fetch fails)
-    const CORS_PROXY = "https://api.allorigins.win/raw?url=";
-
-    const safeJsonFetch = async (url) => {
-      const res = await fetch(url, { method: "GET" });
+    const safeJsonFetch = async (url, headers) => {
+      const res = await fetch(url, { method: "GET", headers });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return await res.json();
     };
 
-    const extractTitlesFromEscoResponse = (data) => {
-      // ESCO returns HAL. The items are typically inside data._embedded.<something>.
-      // We'll be defensive and search for the first embedded array of objects.
-      const embedded = data && data._embedded ? data._embedded : null;
-      if (!embedded) return [];
+    const extractTitlesFromUsaJobsResponse = (data) => {
+      const items =
+        data &&
+        data.SearchResult &&
+        Array.isArray(data.SearchResult.SearchResultItems)
+          ? data.SearchResult.SearchResultItems
+          : [];
 
-      const arrays = Object.values(embedded).filter(v => Array.isArray(v));
-      if (!arrays.length) return [];
-
-      const items = arrays[0];
-
-      const titles = items
+      return items
         .map((item) => {
-          // common label fields across ESCO payloads
-          return (
-            item.title ||
-            item.preferredLabel ||
-            item.preferredTerm ||
-            item.label ||
-            (item._links && item._links.self && item._links.self.title) ||
-            ""
-          );
-        })
-        .map(t => (typeof t === "string" ? t.trim() : ""))
-        .filter(Boolean);
+          const descriptor = item.MatchedObjectDescriptor || {};
+          const title = (descriptor.PositionTitle || "").trim();
+          const remuneration = Array.isArray(descriptor.PositionRemuneration)
+            ? descriptor.PositionRemuneration[0] || {}
+            : {};
+          const minimum = remuneration.MinimumRange;
+          const maximum = remuneration.MaximumRange;
+          const rateInterval = remuneration.RateIntervalCode;
 
-      return titles;
+          let salaryRange = "";
+          if (minimum && maximum) {
+            salaryRange = `$${Number(minimum).toLocaleString("en-US")} - $${Number(maximum).toLocaleString("en-US")}`;
+            if (rateInterval) salaryRange += ` (${rateInterval})`;
+          }
+
+          return {
+            title,
+            salaryRange,
+          };
+        })
+        .filter((item) => item.title);
     };
 
     const renderChips = (titles) => {
       chipsWrap.innerHTML = "";
       if (!titles.length) return;
 
-      titles.forEach((t) => {
+      titles.forEach((item) => {
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className =
           "inline-flex items-center gap-2 px-3 py-2 rounded-2xl text-sm font-extrabold " +
           "bg-white ring-1 ring-black/10 hover:opacity-90 transition";
-        btn.innerHTML = `<span>${t}</span><span class="opacity-50">＋</span>`;
-        btn.addEventListener("click", () => addRow(t));
+        btn.innerHTML = `
+          <span>${item.title}</span>
+          ${item.salaryRange ? `<span class="text-xs opacity-60">${item.salaryRange}</span>` : ""}
+          <span class="opacity-50">＋</span>
+        `;
+        btn.addEventListener("click", () => addRow(item.title, item.salaryRange));
         chipsWrap.appendChild(btn);
       });
     };
@@ -671,25 +754,41 @@
     const pullTitles = async () => {
       const q = buildSearchQuery();
       const pay = Number(payNumber.value || 80000);
+      const location = buildLocationQuery();
+      const apiKey = (usaJobsKeyEl.value || "").trim();
+      const email = (usaJobsEmailEl.value || "").trim();
 
       if (!q.trim()) {
         setStatus('<p class="text-sm text-red-600 font-semibold">Add at least 1 passion or problem keyword first.</p>');
         return;
       }
 
+      if (!apiKey || !email) {
+        setStatus(`
+          <div class="rounded-2xl bg-white ring-1 ring-black/10 p-4">
+            <p class="text-sm font-extrabold text-red-600">Missing USAJOBS API credentials.</p>
+            <p class="text-xs opacity-70 mt-1">Add your USAJOBS API key and account email to pull .gov job titles.</p>
+          </div>
+        `);
+        return;
+      }
+
       setStatus(`
         <div class="rounded-2xl bg-white ring-1 ring-black/10 p-4">
           <p class="text-sm font-extrabold">Pulling titles…</p>
-          <p class="text-xs opacity-70 mt-1">Query: <span class="font-semibold">${q}</span> • Pay target: $${formatUSD(pay)}</p>
+          <p class="text-xs opacity-70 mt-1">Query: <span class="font-semibold">${q}</span> • Pay target: $${formatUSD(pay)}${location ? ` • ${location}` : ""}</p>
         </div>
       `);
 
-      const url = `${ESCO_BASE}?text=${encodeURIComponent(q)}&language=en&type=occupation&limit=12&full=false`;
+      const url = `${USAJOBS_BASE}?Keyword=${encodeURIComponent(q)}&ResultsPerPage=12${location ? `&LocationName=${encodeURIComponent(location)}` : ""}`;
 
       try {
-        // 1) Try direct
-        const data = await safeJsonFetch(url);
-        let titles = extractTitlesFromEscoResponse(data);
+        const data = await safeJsonFetch(url, {
+          "Authorization-Key": apiKey,
+          "User-Agent": email,
+          "Host": "data.usajobs.gov",
+        });
+        let titles = extractTitlesFromUsaJobsResponse(data);
         titles = dedupe(titles).slice(0, 12);
 
         if (!titles.length) {
@@ -708,42 +807,18 @@
         return;
 
       } catch (err1) {
-        // 2) Fallback via CORS proxy
-        try {
-          const proxied = CORS_PROXY + encodeURIComponent(url);
-          const data2 = await safeJsonFetch(proxied);
-          let titles = extractTitlesFromEscoResponse(data2);
-          titles = dedupe(titles).slice(0, 12);
-
-          if (!titles.length) {
-            setStatus('<p class="text-sm opacity-70">No titles found (proxy). Try fewer keywords or more general words.</p>');
-            renderChips([]);
-            return;
-          }
-
-          setStatus(`
-            <div class="rounded-2xl bg-white ring-1 ring-black/10 p-4">
-              <p class="text-sm font-extrabold">Found ${titles.length} titles (proxy fallback)</p>
-              <p class="text-xs opacity-70 mt-1">Your browser likely blocked direct ESCO access (CORS). Chips still work.</p>
-            </div>
-          `);
-          renderChips(titles);
-          return;
-
-        } catch (err2) {
-          setStatus(`
-            <div class="rounded-2xl bg-white ring-1 ring-black/10 p-4">
-              <p class="text-sm font-extrabold text-red-600">Couldn’t pull titles.</p>
-              <p class="text-xs opacity-70 mt-1">
-                Error: ${String(err2 && err2.message ? err2.message : err2)}
-              </p>
-              <p class="text-xs opacity-70 mt-2">
-                Try again later, simplify your keywords, or run this from a local dev server (sometimes GitHub Pages + CORS gets picky).
-              </p>
-            </div>
-          `);
-          renderChips([]);
-        }
+        setStatus(`
+          <div class="rounded-2xl bg-white ring-1 ring-black/10 p-4">
+            <p class="text-sm font-extrabold text-red-600">Couldn’t pull titles.</p>
+            <p class="text-xs opacity-70 mt-1">
+              Error: ${String(err1 && err1.message ? err1.message : err1)}
+            </p>
+            <p class="text-xs opacity-70 mt-2">
+              Check your USAJOBS API key + email, or simplify your keywords.
+            </p>
+          </div>
+        `);
+        renderChips([]);
       }
     };
 
