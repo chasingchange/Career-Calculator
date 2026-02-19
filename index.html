@@ -1,928 +1,434 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chasing Change — 5Ps Career Calculator</title>
-  <meta name="description" content="Chasing Change 5Ps Career Calculator to rank roles by Passion, Place, People, Problem, and Pay." />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>5Ps Job Calculator</title>
 
-  <!-- Tailwind via CDN (embed-friendly) -->
-  <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind via CDN (embed-friendly) -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Fonts (your brand stack) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Muli:wght@300;400;600;700&family=Museo+Moderno:wght@500;700&family=Raleway:wght@500;700;800&display=swap"
-    rel="stylesheet"
-  />
+    <style>
+      /* Small quality-of-life */
+      input[type="number"]::-webkit-outer-spin-button,
+      input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      input[type="number"] {
+        -moz-appearance: textfield;
+      }
+    </style>
+  </head>
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            cc: {
-              text: "#071f35",
-              bg: "#f5f5f7",
-              outline: "#77d770",
-              card: "#ffffff",
-              muted: "#5b6b7a",
-              border: "#d7dde3",
-            },
-          },
-          fontFamily: {
-            body: ["Muli", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
-            heading: ["Raleway", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
-            brand: ["Museo Moderno", "Raleway", "sans-serif"],
-          },
-          boxShadow: {
-            soft: "0 10px 30px rgba(7,31,53,0.10)",
-            outline: "0 0 0 1px rgba(119,215,112,0.55)",
-            glow: "0 10px 50px rgba(119,215,112,0.25)",
-          },
-        },
-      },
-    };
-  </script>
-
-  <style>
-    html, body { height: 100%; }
-    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-    select { -webkit-appearance: none; appearance: none; }
-    input[type="range"] { accent-color: #77d770; }
-  </style>
-</head>
-
-<body class="min-h-screen bg-cc-bg text-cc-text font-body">
-  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
-    <div class="mx-auto max-w-3xl">
-      <!-- Header -->
-      <header class="mb-6 sm:mb-8">
-        <div class="rounded-3xl overflow-hidden ring-1 ring-black/5 shadow-soft bg-white">
-          <div class="relative p-6 sm:p-8">
-            <div class="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-cc-outline/20 blur-3xl"></div>
-            <div class="absolute -bottom-28 -left-28 w-80 h-80 rounded-full bg-cc-text/10 blur-3xl"></div>
-
-            <div class="relative flex items-center justify-between gap-6">
-              <div class="flex items-center gap-4">
-                <div class="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 flex items-center justify-center">
-                  <img src="Chasing Change Logo2.png" alt="Chasing Change logo" class="w-full h-auto" />
-                </div>
-
-                <div class="flex flex-col">
-                  <p class="text-xs sm:text-sm tracking-[0.3em] uppercase font-brand opacity-60">
-                    Chasing Change
-                  </p>
-                  <h1 class="mt-1 text-xl sm:text-3xl font-extrabold font-heading leading-tight">
-                    5Ps Career Calculator
-                  </h1>
-                  <p class="mt-2 text-sm sm:text-base opacity-80 max-w-2xl">
-                    Weight what matters. Pull real job titles. Score your options. Choose your career.
-                  </p>
-                </div>
-              </div>
-
-              <div class="hidden sm:flex flex-col items-center">
-                <a
-                  href="#"
-                  class="group inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3
-                         text-sm font-extrabold bg-cc-text text-white hover:opacity-95 transition shadow-soft"
-                >
-                  Save / Share
-                  <span class="inline-flex items-center justify-center w-8 h-8 rounded-xl
-                               bg-white/10 ring-1 ring-white/15 group-hover:bg-white/15 transition">
-                    →
-                  </span>
-                </a>
-                <p class="mt-2 text-xs opacity-60 text-center">1% better every day</p>
-              </div>
-            </div>
-
-            <div class="sm:hidden mt-4">
-              <a
-                href="#"
-                class="inline-flex w-full items-center justify-center gap-2 rounded-2xl px-5 py-4 text-sm font-extrabold
-                       bg-cc-text text-white hover:opacity-95 transition shadow-soft"
-              >
-                Save / Share →
-              </a>
-              <p class="mt-2 text-xs opacity-60 text-center">1% better every day</p>
-            </div>
-          </div>
-        </div>
+  <body class="min-h-screen bg-neutral-950 text-neutral-100">
+    <main class="mx-auto max-w-3xl px-4 py-10">
+      <header class="mb-8">
+        <h1 class="text-3xl font-bold tracking-tight">5Ps Job Calculator</h1>
+        <p class="mt-2 text-neutral-300">
+          Score each category 1–10. Adjust weights if you want. Get a single job score + decision.
+        </p>
       </header>
 
-      <main class="space-y-5 sm:space-y-6 pb-10">
+      <section class="rounded-2xl bg-neutral-900/60 p-5 shadow-lg ring-1 ring-neutral-800">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <!-- Job Name -->
+          <div class="sm:col-span-2">
+            <label class="text-sm text-neutral-300">Job / Company Name</label>
+            <input
+              id="jobName"
+              class="mt-1 w-full rounded-xl bg-neutral-950/70 px-4 py-3 text-neutral-100 ring-1 ring-neutral-800 focus:outline-none focus:ring-2 focus:ring-white/40"
+              placeholder="e.g., Deloitte — Learning & Development"
+            />
+          </div>
 
-        <!-- NEW Card: Inputs (Passions / Problem / Pay scale) -->
-        <section class="rounded-3xl bg-cc-card shadow-soft ring-1 ring-black/5 overflow-hidden">
-          <div class="p-5 sm:p-8">
-            <div class="flex items-start gap-3 mb-6">
-              <div class="w-10 h-10 rounded-xl bg-cc-outline/15 ring-1 ring-cc-outline/40 flex items-center justify-center">
-                <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M12 2v6" />
-                  <path d="M12 16v6" />
-                  <path d="M2 12h6" />
-                  <path d="M16 12h6" />
-                  <path d="M7 7l2 2" />
-                  <path d="M15 15l2 2" />
-                  <path d="M17 7l-2 2" />
-                  <path d="M9 15l-2 2" />
-                </svg>
-              </div>
+          <!-- Score Inputs -->
+          <div id="scoresWrap" class="sm:col-span-2 grid gap-4 sm:grid-cols-2"></div>
+
+          <!-- Weight Inputs -->
+          <div class="sm:col-span-2 mt-2">
+            <div class="flex items-center justify-between">
+              <h2 class="text-lg font-semibold">Weights</h2>
+              <button
+                id="resetWeights"
+                class="rounded-xl bg-neutral-100 px-3 py-2 text-sm font-semibold text-neutral-900 hover:bg-white"
+                type="button"
+              >
+                Reset defaults
+              </button>
+            </div>
+            <p class="mt-1 text-sm text-neutral-300">
+              Weights auto-normalize to 100% if you change them.
+            </p>
+          </div>
+
+          <div id="weightsWrap" class="sm:col-span-2 grid gap-4 sm:grid-cols-2"></div>
+
+          <!-- Output -->
+          <div class="sm:col-span-2 mt-2 rounded-2xl bg-neutral-950/60 p-5 ring-1 ring-neutral-800">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h2 class="text-lg sm:text-xl font-bold font-heading">0. Tell it what you want</h2>
-                <p class="text-sm opacity-80">
-                  Add your keywords + a target pay. Then we’ll pull generic occupation titles online and drop them into your table.
+                <p class="text-sm text-neutral-300">Final Score (0–10)</p>
+                <p id="finalScore" class="text-4xl font-bold">—</p>
+              </div>
+
+              <div class="text-left sm:text-right">
+                <p class="text-sm text-neutral-300">Decision</p>
+                <p id="decision" class="text-2xl font-semibold">—</p>
+                <p id="rule" class="mt-1 text-sm text-neutral-400">
+                  8.0+ Strong Yes • 7.0–7.9 Consider • &lt;7 Settling
                 </p>
               </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label for="passions" class="block text-sm font-semibold mb-2">Passions (comma-separated)</label>
-                <input
-                  id="passions"
-                  type="text"
-                  placeholder="e.g. fitness, technology, film, teaching, writing"
-                  class="w-full px-4 py-3 rounded-xl bg-white border border-black/10
-                         focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition"
-                />
-                <p class="mt-2 text-xs opacity-60">Tip: 3–7 words max works best.</p>
-              </div>
-
-              <div class="sm:col-span-2">
-                <label for="problem-statement" class="block text-sm font-semibold mb-2">Problem you like solving</label>
-                <textarea
-                  id="problem-statement"
-                  rows="3"
-                  placeholder="e.g. Helping teams streamline operations, clarify priorities, and build repeatable systems."
-                  class="w-full px-4 py-3 rounded-xl bg-white border border-black/10
-                         focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition"
-                ></textarea>
-                <p class="mt-2 text-xs opacity-60">Describe the type of problem. We’ll turn it into searchable keywords.</p>
-              </div>
-            </div>
-
-            <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div>
-                <label for="location-city" class="block text-sm font-semibold mb-2">Target city</label>
-                <input
-                  id="location-city"
-                  type="text"
-                  placeholder="e.g. Austin"
-                  class="w-full px-4 py-3 rounded-xl bg-white border border-black/10
-                         focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition"
-                />
-              </div>
-              <div>
-                <label for="location-state" class="block text-sm font-semibold mb-2">State</label>
-                <input
-                  id="location-state"
-                  type="text"
-                  placeholder="e.g. TX"
-                  class="w-full px-4 py-3 rounded-xl bg-white border border-black/10
-                         focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition"
-                />
-              </div>
-              <div class="flex items-center gap-3 rounded-2xl bg-black/5 ring-1 ring-black/10 px-4 py-3">
-                <input
-                  id="work-remote"
-                  type="checkbox"
-                  class="h-4 w-4 accent-cc-outline"
-                />
-                <label for="work-remote" class="text-sm font-semibold">Include work-from-home roles</label>
-              </div>
-              <div>
-                <label for="usajobs-key" class="block text-sm font-semibold mb-2">USAJOBS API key</label>
-                <input
-                  id="usajobs-key"
-                  type="password"
-                  placeholder="Paste your key"
-                  class="w-full px-4 py-3 rounded-xl bg-white border border-black/10
-                         focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition"
-                />
-                <p class="mt-2 text-xs opacity-60">Get a free key at USAJOBS.gov.</p>
-              </div>
-            </div>
-
-            <div class="mt-4">
-              <label for="usajobs-email" class="block text-sm font-semibold mb-2">USAJOBS account email (required by API)</label>
-              <input
-                id="usajobs-email"
-                type="email"
-                placeholder="you@email.com"
-                class="w-full px-4 py-3 rounded-xl bg-white border border-black/10
-                       focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition"
-              />
-            </div>
-
-            <div class="mt-5 rounded-2xl bg-black/5 ring-1 ring-black/10 p-4 sm:p-5">
-              <div class="flex items-start justify-between gap-4 flex-wrap">
-                <div>
-                  <p class="text-sm font-extrabold font-heading">Pay target (slider + number)</p>
-                  <p class="text-xs opacity-70">Used as a *seniority hint* (titles don’t include salary).</p>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="text-xs opacity-70">$</span>
-                  <input
-                    id="pay-number"
-                    type="number"
-                    min="30000"
-                    max="300000"
-                    step="1000"
-                    value="80000"
-                    class="w-36 px-3 py-2 rounded-xl bg-white border border-black/10 text-sm
-                           focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition"
-                  />
-                </div>
-              </div>
-
-              <div class="mt-4">
-                <input
-                  id="pay-slider"
-                  type="range"
-                  min="30000"
-                  max="300000"
-                  step="1000"
-                  value="80000"
-                  class="w-full"
-                />
-                <div class="mt-2 flex items-center justify-between text-xs opacity-60">
-                  <span>$30k</span>
-                  <span>$300k</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="mt-4 flex flex-wrap gap-3">
+            <div class="mt-4 flex flex-wrap gap-2">
               <button
-                class="rounded-2xl px-5 py-3 text-sm font-extrabold bg-cc-outline text-cc-text shadow-outline hover:opacity-90 transition"
+                id="copyJson"
+                class="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-neutral-900 hover:bg-neutral-200"
                 type="button"
-                id="pull-titles"
               >
-                Pull job titles from the internet
+                Copy JSON
               </button>
-
               <button
-                class="rounded-2xl px-5 py-3 text-sm font-extrabold bg-black/5 ring-1 ring-black/10 hover:opacity-90 transition"
+                id="copyText"
+                class="rounded-xl bg-neutral-800 px-4 py-2 text-sm font-semibold text-neutral-100 hover:bg-neutral-700"
                 type="button"
-                id="clear-suggested"
               >
-                Clear suggested titles
+                Copy Summary
               </button>
-            </div>
-
-            <div class="mt-4" id="pull-status">
-              <p class="text-sm opacity-70">No titles pulled yet.</p>
-            </div>
-
-            <div class="mt-3 flex flex-wrap gap-2" id="suggested-chips"></div>
-
-            <p class="mt-4 text-xs opacity-60">
-              Data sources: Wikipedia occupations list (titles) + Salary.com (pay ranges). Some browsers may block cross-site requests without the proxy fallback.
-            </p>
-          </div>
-        </section>
-
-        <!-- Card: weights -->
-        <section class="rounded-3xl bg-cc-card shadow-soft ring-1 ring-black/5 overflow-hidden">
-          <div class="p-5 sm:p-8">
-            <div class="flex items-start gap-3 mb-6">
-              <div class="w-10 h-10 rounded-xl bg-cc-outline/15 ring-1 ring-cc-outline/40 flex items-center justify-center">
-                <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M12 20h9" />
-                  <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
-                </svg>
-              </div>
-              <div>
-                <h2 class="text-lg sm:text-xl font-bold font-heading">1. Choose your 5P weights</h2>
-                <p class="text-sm opacity-80">Weights multiply each score. Keep it simple and honest.</p>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-              <div>
-                <label for="weight-passion" class="block text-sm font-semibold mb-2">Passion</label>
-                <select
-                  id="weight-passion"
-                  class="w-full px-4 py-3 rounded-xl bg-white border border-black/10
-                         focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition"
-                >
-                  <option value="1">1 — Not that important</option>
-                  <option value="2" selected>2 — Neutral</option>
-                  <option value="3">3 — Very important</option>
-                </select>
-              </div>
-
-              <div>
-                <label for="weight-place" class="block text-sm font-semibold mb-2">Place</label>
-                <select
-                  id="weight-place"
-                  class="w-full px-4 py-3 rounded-xl bg-white border border-black/10
-                         focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition"
-                >
-                  <option value="1">1 — Not that important</option>
-                  <option value="2" selected>2 — Neutral</option>
-                  <option value="3">3 — Very important</option>
-                </select>
-              </div>
-
-              <div>
-                <label for="weight-people" class="block text-sm font-semibold mb-2">People</label>
-                <select
-                  id="weight-people"
-                  class="w-full px-4 py-3 rounded-xl bg-white border border-black/10
-                         focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition"
-                >
-                  <option value="1">1 — Not that important</option>
-                  <option value="2" selected>2 — Neutral</option>
-                  <option value="3">3 — Very important</option>
-                </select>
-              </div>
-
-              <div>
-                <label for="weight-problem" class="block text-sm font-semibold mb-2">Problem</label>
-                <select
-                  id="weight-problem"
-                  class="w-full px-4 py-3 rounded-xl bg-white border border-black/10
-                         focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition"
-                >
-                  <option value="1">1 — Not that important</option>
-                  <option value="2" selected>2 — Neutral</option>
-                  <option value="3">3 — Very important</option>
-                </select>
-              </div>
-
-              <div>
-                <label for="weight-pay" class="block text-sm font-semibold mb-2">Pay</label>
-                <select
-                  id="weight-pay"
-                  class="w-full px-4 py-3 rounded-xl bg-white border border-black/10
-                         focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition"
-                >
-                  <option value="1">1 — Not that important</option>
-                  <option value="2" selected>2 — Neutral</option>
-                  <option value="3">3 — Very important</option>
-                </select>
-              </div>
-            </div>
-
-            <p class="mt-4 text-xs opacity-60">
-              Tip: If everything is “3,” nothing is prioritized. Force tradeoffs.
-            </p>
-          </div>
-        </section>
-
-        <!-- Card: scoring table -->
-        <section class="rounded-3xl bg-cc-card shadow-soft ring-1 ring-black/5 overflow-hidden">
-          <div class="p-5 sm:p-8">
-            <div class="flex items-start gap-3 mb-6">
-              <div class="w-10 h-10 rounded-xl bg-cc-outline/15 ring-1 ring-cc-outline/40 flex items-center justify-center">
-                <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </div>
-              <div>
-                <h2 class="text-lg sm:text-xl font-bold font-heading">2. Score potential careers</h2>
-                <p class="text-sm opacity-80">Score each category 1–5. Add as many roles as you want.</p>
-              </div>
-            </div>
-
-            <div class="overflow-x-auto rounded-2xl ring-1 ring-black/10 bg-white">
-              <table class="w-full min-w-[820px] border-collapse">
-                <thead class="bg-black/5">
-                  <tr class="text-left text-xs sm:text-sm">
-                    <th class="p-3 font-heading font-bold opacity-70">Job Title</th>
-                    <th class="p-3 font-heading font-bold opacity-70">Passion</th>
-                    <th class="p-3 font-heading font-bold opacity-70">Place</th>
-                    <th class="p-3 font-heading font-bold opacity-70">People</th>
-                    <th class="p-3 font-heading font-bold opacity-70">Problem</th>
-                    <th class="p-3 font-heading font-bold opacity-70">Pay</th>
-                    <th class="p-3 font-heading font-bold opacity-70">Salary Range</th>
-                  </tr>
-                </thead>
-                <tbody id="career-body" class="[&>tr:not(:last-child)]:border-b [&>tr]:border-black/10"></tbody>
-              </table>
-            </div>
-
-            <div class="mt-4 flex flex-wrap gap-3">
               <button
-                class="rounded-2xl px-5 py-3 text-sm font-extrabold bg-black/5 ring-1 ring-black/10 hover:opacity-90 transition"
+                id="clearAll"
+                class="rounded-xl bg-neutral-950 px-4 py-2 text-sm font-semibold text-neutral-100 ring-1 ring-neutral-700 hover:bg-neutral-900"
                 type="button"
-                id="add-row"
               >
-                Add another career
+                Clear
               </button>
-
-              <button
-                class="rounded-2xl px-5 py-3 text-sm font-extrabold bg-cc-outline text-cc-text shadow-outline hover:opacity-90 transition"
-                type="button"
-                id="calculate"
-              >
-                Calculate ranked results
-              </button>
+              <span id="toast" class="ml-1 hidden text-sm text-neutral-300"></span>
             </div>
-
-            <p class="mt-3 text-xs opacity-60">
-              Rate each category from 1 (low fit) to 5 (high fit).
-            </p>
           </div>
-        </section>
-
-        <!-- Card: results -->
-        <section class="rounded-3xl bg-cc-card shadow-soft ring-1 ring-black/5 overflow-hidden">
-          <div class="p-5 sm:p-8">
-            <div class="flex items-start gap-3 mb-6">
-              <div class="w-10 h-10 rounded-xl bg-cc-outline/15 ring-1 ring-cc-outline/40 flex items-center justify-center">
-                <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M12 3v18" />
-                  <path d="M3 12h18" />
-                </svg>
-              </div>
-              <div>
-                <h2 class="text-lg sm:text-xl font-bold font-heading">3. Your ranked results</h2>
-                <p class="text-sm opacity-80">Highest score = best weighted fit.</p>
-              </div>
-            </div>
-
-            <div id="results" class="space-y-3">
-              <p class="text-sm opacity-70">Add careers and click “Calculate” to see your top matches.</p>
-            </div>
-
-            <p class="mt-6 text-xs text-center opacity-60">© 2026 Chasing Change — 1% better every day</p>
-          </div>
-        </section>
-      </main>
-    </div>
-  </div>
-
-  <script>
-    // -----------------------------
-    // Existing table/scoring logic
-    // -----------------------------
-    const careerBody = document.getElementById("career-body");
-    const results = document.getElementById("results");
-    const addRowButton = document.getElementById("add-row");
-    const calculateButton = document.getElementById("calculate");
-
-    const weightSelectors = {
-      passion: document.getElementById("weight-passion"),
-      place: document.getElementById("weight-place"),
-      people: document.getElementById("weight-people"),
-      problem: document.getElementById("weight-problem"),
-      pay: document.getElementById("weight-pay"),
-    };
-
-    const defaultCareers = [];
-
-    const createScoreInput = () => {
-      const input = document.createElement("input");
-      input.type = "number";
-      input.min = "1";
-      input.max = "5";
-      input.value = "3";
-      input.inputMode = "numeric";
-      input.className =
-        "w-24 px-3 py-2 rounded-xl bg-white border border-black/10 text-sm " +
-        "focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition";
-      return input;
-    };
-
-    const createTitleInput = (value = "") => {
-      const input = document.createElement("input");
-      input.type = "text";
-      input.placeholder = "e.g. UX Researcher";
-      input.value = value;
-      input.className =
-        "w-full px-3 py-2 rounded-xl bg-white border border-black/10 text-sm " +
-        "focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition";
-      return input;
-    };
-
-    const createSalaryInput = (value = "") => {
-      const input = document.createElement("input");
-      input.type = "text";
-      input.placeholder = "—";
-      input.value = value;
-      input.readOnly = true;
-      input.className =
-        "w-full px-3 py-2 rounded-xl bg-white border border-black/10 text-sm " +
-        "focus:border-cc-outline focus:ring-2 focus:ring-cc-outline/70 focus:outline-none transition";
-      return input;
-    };
-
-    const addRow = (title = "", salaryRange = "") => {
-      const row = document.createElement("tr");
-      row.className = "align-top";
-
-      const titleCell = document.createElement("td");
-      titleCell.className = "p-3";
-      const titleInput = createTitleInput(title);
-      titleCell.appendChild(titleInput);
-
-      const categories = ["Passion", "Place", "People", "Problem", "Pay"];
-      const inputs = [];
-
-      categories.forEach(() => {
-        const cell = document.createElement("td");
-        cell.className = "p-3";
-        const input = createScoreInput();
-        cell.appendChild(input);
-        inputs.push(input);
-        row.appendChild(cell);
-      });
-
-      row.prepend(titleCell);
-      row._inputs = inputs;
-      row._titleInput = titleInput;
-
-      const salaryCell = document.createElement("td");
-      salaryCell.className = "p-3";
-      const salaryInput = createSalaryInput(salaryRange);
-      salaryCell.appendChild(salaryInput);
-      row.appendChild(salaryCell);
-      row._salaryInput = salaryInput;
-
-      careerBody.appendChild(row);
-    };
-
-    const getWeights = () => ({
-      passion: Number(weightSelectors.passion.value),
-      place: Number(weightSelectors.place.value),
-      people: Number(weightSelectors.people.value),
-      problem: Number(weightSelectors.problem.value),
-      pay: Number(weightSelectors.pay.value),
-    });
-
-    const getSalaryMax = (salaryRange) => {
-      if (!salaryRange) return null;
-      const match = salaryRange.match(/\$([\d,]+)\s*-\s*\$([\d,]+)/);
-      if (!match) return null;
-      return Number(match[2].replace(/,/g, ""));
-    };
-
-    const calculateScores = () => {
-      sortCareerRows();
-      const weights = getWeights();
-      const rows = Array.from(careerBody.querySelectorAll("tr"));
-
-      const resultsData = rows
-        .map((row) => {
-          const title = row._titleInput.value.trim();
-          const scores = row._inputs.map((input) => Number(input.value || 0));
-          const salaryMax = getSalaryMax(row._salaryInput.value);
-          const payContribution = salaryMax ? salaryMax * weights.pay : scores[4] * weights.pay;
-
-          const weightedScore =
-            scores[0] * weights.passion +
-            scores[1] * weights.place +
-            scores[2] * weights.people +
-            scores[3] * weights.problem +
-            payContribution;
-
-          return {
-            title: title || "Untitled Career",
-            weightedScore,
-          };
-        })
-        .filter((item) => item.title.trim() !== "");
-
-      results.innerHTML = "";
-
-      if (!resultsData.length) {
-        results.innerHTML = '<p class="text-sm opacity-70">Add at least one career to see results.</p>';
-        return;
-      }
-
-      resultsData
-        .sort((a, b) => b.weightedScore - a.weightedScore)
-        .forEach((item, index) => {
-          const card = document.createElement("div");
-          card.className =
-            "flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 " +
-            "rounded-2xl p-4 bg-white ring-1 ring-black/10";
-
-          const left = document.createElement("div");
-          left.innerHTML = `
-            <p class="text-xs tracking-[0.25em] uppercase opacity-60 font-brand">Rank</p>
-            <p class="text-base sm:text-lg font-extrabold font-heading">${index + 1}. ${item.title}</p>
-          `;
-
-          const badge = document.createElement("div");
-          badge.className =
-            "inline-flex items-center justify-center px-4 py-2 rounded-2xl " +
-            "bg-cc-outline/20 ring-1 ring-cc-outline/30 font-extrabold text-sm";
-          badge.textContent = `Weighted Score: ${Math.round(item.weightedScore).toLocaleString("en-US")}`;
-
-          card.append(left, badge);
-          results.appendChild(card);
-        });
-    };
-
-    addRowButton.addEventListener("click", () => addRow());
-    calculateButton.addEventListener("click", calculateScores);
-
-    defaultCareers.forEach((title) => addRow(title));
-
-    // ----------------------------------------
-    // NEW: Passions/Problem/Pay + Title Puller
-    // ----------------------------------------
-    const passionsEl = document.getElementById("passions");
-    const problemEl = document.getElementById("problem-statement");
-    const cityEl = document.getElementById("location-city");
-    const stateEl = document.getElementById("location-state");
-    const remoteEl = document.getElementById("work-remote");
-    const paySlider = document.getElementById("pay-slider");
-    const payNumber = document.getElementById("pay-number");
-    const pullBtn = document.getElementById("pull-titles");
-    const clearSuggestedBtn = document.getElementById("clear-suggested");
-    const pullStatus = document.getElementById("pull-status");
-    const chipsWrap = document.getElementById("suggested-chips");
-
-    // Keep slider + numeric synced
-    const clamp = (n, min, max) => Math.min(max, Math.max(min, n));
-    const formatUSD = (n) => n.toLocaleString("en-US");
-
-    const syncPayFromSlider = () => {
-      payNumber.value = paySlider.value;
-    };
-    const syncPayFromNumber = () => {
-      const val = clamp(Number(payNumber.value || 80000), 30000, 300000);
-      payNumber.value = val;
-      paySlider.value = val;
-    };
-
-    paySlider.addEventListener("input", syncPayFromSlider);
-    payNumber.addEventListener("input", syncPayFromNumber);
-
-    const tokenize = (s) => {
-      return (s || "")
-        .split(/[,/|]+|\s+/)
-        .map(x => x.trim())
-        .filter(Boolean)
-        .filter(x => x.length >= 3);
-    };
-
-    const buildSearchQuery = () => {
-      const passions = tokenize(passionsEl.value);
-      const problems = tokenize(problemEl.value);
-
-      // Seniority hint from pay (since titles don't contain salary)
-      const pay = Number(payNumber.value || 80000);
-      const seniority =
-        pay >= 180000 ? ["director", "head", "lead", "principal"] :
-        pay >= 130000 ? ["senior", "lead"] :
-        pay >= 90000  ? ["specialist", "analyst", "manager"] :
-                        ["associate", "coordinator"];
-
-      const remote = remoteEl.checked ? ["remote", "work", "home"] : [];
-
-      // Build a compact query string
-      const all = [...passions, ...problems, ...seniority, ...remote].slice(0, 12);
-      return all.join(" ");
-    };
-
-    const buildSearchTokens = () => tokenize(buildSearchQuery());
-
-    const buildLocationQuery = () => {
-      const city = (cityEl.value || "").trim();
-      const state = (stateEl.value || "").trim();
-      if (city && state) return `${city}, ${state}`;
-      return city || state || "";
-    };
-
-    const dedupe = (arr) => {
-      const seen = new Set();
-      return arr.filter((item) => {
-        const title = typeof item === "string" ? item : item.title || "";
-        const key = title.toLowerCase();
-        if (!key) return false;
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
-      });
-    };
-
-    // Wikipedia occupations list:
-    // https://en.wikipedia.org/wiki/List_of_occupations
-    const WIKI_OCCUPATIONS = "https://en.wikipedia.org/wiki/List_of_occupations";
-    const CORS_PROXY = "https://api.allorigins.win/raw?url=";
-
-    const safeTextFetch = async (url) => {
-      const res = await fetch(url, { method: "GET" });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return await res.text();
-    };
-
-    const fetchOccupationTitles = async () => {
-      let html;
-      try {
-        html = await safeTextFetch(WIKI_OCCUPATIONS);
-      } catch (err) {
-        html = await safeTextFetch(`${CORS_PROXY}${encodeURIComponent(WIKI_OCCUPATIONS)}`);
-      }
-
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, "text/html");
-      const items = Array.from(doc.querySelectorAll("#mw-content-text li"));
-
-      return items
-        .map((li) => li.textContent || "")
-        .map((text) => text.replace(/\s+/g, " ").trim())
-        .filter((text) => text && text.length <= 60)
-        .filter((text) => !text.includes("List of"))
-        .filter((text) => !text.includes("Wikipedia"));
-    };
-
-    const slugify = (text) =>
-      text
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)+/g, "");
-
-    const parseSalaryRange = (text) => {
-      if (!text) return "";
-      const match =
-        text.match(/\$[\d,]+\s*-\s*\$[\d,]+/) ||
-        text.match(/\$[\d,]+\s*to\s*\$[\d,]+/i);
-      return match ? match[0].replace(/\s+to\s+/i, " - ") : "";
-    };
-
-    const salaryCache = new Map();
-
-    const fetchSalaryRange = async (title, location) => {
-      const cacheKey = `${title}__${location}`;
-      if (salaryCache.has(cacheKey)) return salaryCache.get(cacheKey);
-
-      const slug = slugify(title);
-      const urlBase = `https://www.salary.com/research/salary/listing/${slug}-salary`;
-      const url = location ? `${urlBase}?location=${encodeURIComponent(location)}` : urlBase;
-
-      let html = "";
-      try {
-        html = await safeTextFetch(url);
-      } catch (err) {
-        html = await safeTextFetch(`${CORS_PROXY}${encodeURIComponent(url)}`);
-      }
-
-      const range = parseSalaryRange(html);
-      const result = range || "Salary data unavailable";
-      salaryCache.set(cacheKey, result);
-      return result;
-    };
-
-    const mapWithConcurrency = async (items, mapper, limit = 4) => {
-      const results = [];
-      const queue = [...items];
-      const workers = Array.from({ length: limit }, async () => {
-        while (queue.length) {
-          const current = queue.shift();
-          const mapped = await mapper(current);
-          results.push(mapped);
-        }
-      });
-      await Promise.all(workers);
-      return results;
-    };
-
-    const scoreTitleMatch = (title, tokens) => {
-      const titleTokens = tokenize(title.toLowerCase());
-      if (!tokens.length) return 0;
-      const overlap = titleTokens.filter((t) => tokens.includes(t)).length;
-      return overlap / tokens.length;
-    };
-
-    const renderChips = (titles) => {
-      chipsWrap.innerHTML = "";
-      if (!titles.length) return;
-
-      titles.forEach((item) => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className =
-          "inline-flex items-center gap-2 px-3 py-2 rounded-2xl text-sm font-extrabold " +
-          "bg-white ring-1 ring-black/10 hover:opacity-90 transition";
-        btn.innerHTML = `
-          <span>${item.title}</span>
-          ${item.salaryRange ? `<span class="text-xs opacity-60">${item.salaryRange}</span>` : ""}
-          <span class="opacity-50">＋</span>
-        `;
-        btn.addEventListener("click", () => addRow(item.title, item.salaryRange));
-        chipsWrap.appendChild(btn);
-      });
-    };
-
-    const setStatus = (html) => {
-      pullStatus.innerHTML = html;
-    };
-
-    function computeRowSortScore(row, tokens, targetPay) {
-      const title = row._titleInput.value.trim();
-      const scores = row._inputs.map((input) => Number(input.value || 0));
-      const salaryMax = getSalaryMax(row._salaryInput.value);
-
-      const keywordScore = scoreTitleMatch(title, tokens) * 5;
-      const salaryScore = salaryMax
-        ? Math.max(0, 1 - Math.abs(salaryMax - targetPay) / targetPay) * 5
-        : scores[4];
-
-      return scores[0] + scores[1] + scores[2] + scores[3] + salaryScore + keywordScore;
-    }
-
-    function sortCareerRows() {
-      const tokens = buildSearchTokens();
-      const targetPay = Number(payNumber.value || 80000);
-      const rows = Array.from(careerBody.querySelectorAll("tr"));
-      rows
-        .sort((a, b) => computeRowSortScore(b, tokens, targetPay) - computeRowSortScore(a, tokens, targetPay))
-        .forEach((row) => careerBody.appendChild(row));
-    }
-
-    const pullTitles = async () => {
-      const q = buildSearchQuery();
-      const pay = Number(payNumber.value || 80000);
-      const location = buildLocationQuery();
-      const tokens = buildSearchTokens();
-
-      if (!q.trim()) {
-        setStatus('<p class="text-sm text-red-600 font-semibold">Add at least 1 passion or problem keyword first.</p>');
-        return;
-      }
-
-      if (!apiKey || !email) {
-        setStatus(`
-          <div class="rounded-2xl bg-white ring-1 ring-black/10 p-4">
-            <p class="text-sm font-extrabold text-red-600">Missing USAJOBS API credentials.</p>
-            <p class="text-xs opacity-70 mt-1">Add your USAJOBS API key and account email to pull .gov job titles.</p>
-          </div>
-        `);
-        return;
-      }
-
-      setStatus(`
-        <div class="rounded-2xl bg-white ring-1 ring-black/10 p-4">
-          <p class="text-sm font-extrabold">Pulling titles…</p>
-          <p class="text-xs opacity-70 mt-1">Query: <span class="font-semibold">${q}</span> • Pay target: $${formatUSD(pay)}${location ? ` • ${location}` : ""}</p>
         </div>
-      `);
+      </section>
 
-      try {
-        const rawTitles = await fetchOccupationTitles();
-        const scored = dedupe(rawTitles)
-          .map((title) => ({
-            title,
-            relevance: scoreTitleMatch(title, tokens),
-          }))
-          .sort((a, b) => b.relevance - a.relevance)
-          .slice(0, 12);
+      <footer class="mt-6 text-sm text-neutral-500">
+        Tip: Use this for offers too. Any decision becomes easier when you score it.
+      </footer>
+    </main>
 
-        const hydrated = await mapWithConcurrency(
-          scored,
-          async (item) => {
-            const salaryRange = await fetchSalaryRange(item.title, location);
-            return { ...item, salaryRange };
-          },
-          4
-        );
+    <script>
+      // ===== Config =====
+      const DEFAULTS = {
+        scores: { pay: 8, passion: 7, problem: 8, place: 7, people: 8 },
+        weights: { pay: 30, passion: 15, problem: 20, place: 15, people: 20 },
+      };
 
-        if (!hydrated.length) {
-          setStatus('<p class="text-sm opacity-70">No titles found. Try fewer keywords or more general words.</p>');
-          renderChips([]);
-          return;
+      const LABELS = {
+        pay: { title: "Pay", hint: "Comp, upside, total rewards" },
+        passion: { title: "Passion", hint: "Enjoyment + alignment" },
+        problem: { title: "Problem", hint: "Do you like solving this?" },
+        place: { title: "Place", hint: "Remote, commute, city, vibe" },
+        people: { title: "People", hint: "Boss, team, culture, talent" },
+      };
+
+      // ===== State =====
+      const state = {
+        jobName: "",
+        scores: { ...DEFAULTS.scores },
+        weights: { ...DEFAULTS.weights },
+      };
+
+      // ===== Helpers =====
+      const $ = (id) => document.getElementById(id);
+
+      function clamp(n, min, max) {
+        return Math.max(min, Math.min(max, n));
+      }
+
+      function round(n, decimals = 2) {
+        const p = Math.pow(10, decimals);
+        return Math.round(n * p) / p;
+      }
+
+      function normalizeWeights(weightsObj) {
+        const keys = Object.keys(weightsObj);
+        const sum = keys.reduce((acc, k) => acc + Number(weightsObj[k] || 0), 0);
+        if (sum <= 0) return { ...DEFAULTS.weights };
+        const normalized = {};
+        keys.forEach((k) => {
+          normalized[k] = (Number(weightsObj[k] || 0) / sum) * 100;
+        });
+        return normalized;
+      }
+
+      function computeFinalScore() {
+        const wNorm = normalizeWeights(state.weights);
+        const final =
+          (state.scores.pay * (wNorm.pay / 100)) +
+          (state.scores.passion * (wNorm.passion / 100)) +
+          (state.scores.problem * (wNorm.problem / 100)) +
+          (state.scores.place * (wNorm.place / 100)) +
+          (state.scores.people * (wNorm.people / 100));
+        return round(final, 2);
+      }
+
+      function decisionLabel(score) {
+        if (score >= 8) return "Strong Yes";
+        if (score >= 7) return "Strategic Consider";
+        return "Settling";
+      }
+
+      function toast(msg) {
+        const t = $("toast");
+        t.textContent = msg;
+        t.classList.remove("hidden");
+        clearTimeout(toast._t);
+        toast._t = setTimeout(() => t.classList.add("hidden"), 1400);
+      }
+
+      async function copyToClipboard(text) {
+        try {
+          await navigator.clipboard.writeText(text);
+          toast("Copied ✅");
+        } catch {
+          // Fallback
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+          toast("Copied ✅");
+        }
+      }
+
+      function buildCard({ key, title, hint, value, onChange, min = 1, max = 10, step = 1 }) {
+        const wrap = document.createElement("div");
+        wrap.className =
+          "rounded-2xl bg-neutral-950/50 p-4 ring-1 ring-neutral-800";
+
+        wrap.innerHTML = `
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <p class="text-sm text-neutral-300">${title}</p>
+              <p class="text-xs text-neutral-500">${hint}</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button
+                data-minus="${key}"
+                class="h-9 w-9 rounded-xl bg-neutral-900 text-neutral-100 ring-1 ring-neutral-800 hover:bg-neutral-800"
+                type="button"
+                aria-label="decrease"
+              >−</button>
+              <input
+                data-input="${key}"
+                type="number"
+                inputmode="numeric"
+                min="${min}"
+                max="${max}"
+                step="${step}"
+                class="w-16 rounded-xl bg-neutral-950/70 px-3 py-2 text-center text-neutral-100 ring-1 ring-neutral-800 focus:outline-none focus:ring-2 focus:ring-white/40"
+                value="${value}"
+              />
+              <button
+                data-plus="${key}"
+                class="h-9 w-9 rounded-xl bg-neutral-900 text-neutral-100 ring-1 ring-neutral-800 hover:bg-neutral-800"
+                type="button"
+                aria-label="increase"
+              >+</button>
+            </div>
+          </div>
+          <div class="mt-3">
+            <input
+              data-range="${key}"
+              type="range"
+              min="${min}"
+              max="${max}"
+              step="${step}"
+              value="${value}"
+              class="w-full"
+            />
+          </div>
+        `;
+
+        const input = wrap.querySelector(`[data-input="${key}"]`);
+        const range = wrap.querySelector(`[data-range="${key}"]`);
+        const minus = wrap.querySelector(`[data-minus="${key}"]`);
+        const plus = wrap.querySelector(`[data-plus="${key}"]`);
+
+        function sync(newVal) {
+          input.value = newVal;
+          range.value = newVal;
+          onChange(newVal);
+          renderOutput();
         }
 
-        setStatus(`
-          <div class="rounded-2xl bg-white ring-1 ring-black/10 p-4">
-            <p class="text-sm font-extrabold">Found ${hydrated.length} titles</p>
-            <p class="text-xs opacity-70 mt-1">Click a chip to add it as a row (or re-run with different keywords).</p>
-          </div>
-        `);
-        renderChips(hydrated);
-        return;
+        input.addEventListener("input", () => sync(clamp(Number(input.value || 0), min, max)));
+        range.addEventListener("input", () => sync(Number(range.value)));
+        minus.addEventListener("click", () => sync(clamp(Number(input.value || 0) - step, min, max)));
+        plus.addEventListener("click", () => sync(clamp(Number(input.value || 0) + step, min, max)));
 
-      } catch (err1) {
-        setStatus(`
-          <div class="rounded-2xl bg-white ring-1 ring-black/10 p-4">
-            <p class="text-sm font-extrabold text-red-600">Couldn’t pull titles.</p>
-            <p class="text-xs opacity-70 mt-1">
-              Error: ${String(err1 && err1.message ? err1.message : err1)}
-            </p>
-            <p class="text-xs opacity-70 mt-2">
-              Try again later or simplify your keywords.
-            </p>
-          </div>
-        `);
-        renderChips([]);
+        return wrap;
       }
-    };
 
-    pullBtn.addEventListener("click", pullTitles);
-    clearSuggestedBtn.addEventListener("click", () => {
-      chipsWrap.innerHTML = "";
-      setStatus('<p class="text-sm opacity-70">Suggested titles cleared.</p>');
-    });
-  </script>
-</body>
+      function buildWeightCard({ key, title, hint, value, onChange }) {
+        // weights are % points (0–100)
+        const wrap = document.createElement("div");
+        wrap.className =
+          "rounded-2xl bg-neutral-950/50 p-4 ring-1 ring-neutral-800";
+
+        wrap.innerHTML = `
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <p class="text-sm text-neutral-300">${title}</p>
+              <p class="text-xs text-neutral-500">${hint}</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <input
+                data-winput="${key}"
+                type="number"
+                inputmode="numeric"
+                min="0"
+                max="100"
+                step="1"
+                class="w-20 rounded-xl bg-neutral-950/70 px-3 py-2 text-center text-neutral-100 ring-1 ring-neutral-800 focus:outline-none focus:ring-2 focus:ring-white/40"
+                value="${value}"
+              />
+              <span class="text-sm text-neutral-500">%</span>
+            </div>
+          </div>
+          <div class="mt-3">
+            <input data-wrange="${key}" type="range" min="0" max="100" step="1" value="${value}" class="w-full" />
+          </div>
+          <p class="mt-2 text-xs text-neutral-500">
+            Normalized weight: <span data-wnorm="${key}">—</span>%
+          </p>
+        `;
+
+        const input = wrap.querySelector(`[data-winput="${key}"]`);
+        const range = wrap.querySelector(`[data-wrange="${key}"]`);
+
+        function sync(newVal) {
+          const v = clamp(Number(newVal || 0), 0, 100);
+          input.value = v;
+          range.value = v;
+          onChange(v);
+          renderOutput();
+        }
+
+        input.addEventListener("input", () => sync(input.value));
+        range.addEventListener("input", () => sync(range.value));
+
+        return wrap;
+      }
+
+      // ===== Render =====
+      function renderInputs() {
+        // Scores
+        const scoresWrap = $("scoresWrap");
+        scoresWrap.innerHTML = "";
+        Object.keys(LABELS).forEach((key) => {
+          scoresWrap.appendChild(
+            buildCard({
+              key,
+              title: `${LABELS[key].title} (1–10)`,
+              hint: LABELS[key].hint,
+              value: state.scores[key],
+              onChange: (v) => (state.scores[key] = Number(v)),
+              min: 1,
+              max: 10,
+              step: 1,
+            })
+          );
+        });
+
+        // Weights
+        const weightsWrap = $("weightsWrap");
+        weightsWrap.innerHTML = "";
+        Object.keys(LABELS).forEach((key) => {
+          weightsWrap.appendChild(
+            buildWeightCard({
+              key,
+              title: `${LABELS[key].title}`,
+              hint: "Importance weight",
+              value: state.weights[key],
+              onChange: (v) => (state.weights[key] = Number(v)),
+            })
+          );
+        });
+      }
+
+      function renderOutput() {
+        const score = computeFinalScore();
+        $("finalScore").textContent = Number.isFinite(score) ? score.toFixed(2) : "—";
+        $("decision").textContent = Number.isFinite(score) ? decisionLabel(score) : "—";
+
+        // show normalized weights under each card
+        const norm = normalizeWeights(state.weights);
+        Object.keys(norm).forEach((k) => {
+          const el = document.querySelector(`[data-wnorm="${k}"]`);
+          if (el) el.textContent = round(norm[k], 1).toFixed(1);
+        });
+      }
+
+      // ===== Actions =====
+      function getPayload() {
+        const norm = normalizeWeights(state.weights);
+        const final = computeFinalScore();
+        return {
+          jobName: state.jobName || "",
+          scores: { ...state.scores },
+          weights_raw: { ...state.weights },
+          weights_normalized: Object.fromEntries(
+            Object.entries(norm).map(([k, v]) => [k, round(v, 2)])
+          ),
+          finalScore: final,
+          decision: decisionLabel(final),
+          updatedAt: new Date().toISOString(),
+        };
+      }
+
+      function getSummaryText() {
+        const p = getPayload();
+        return [
+          `5Ps Job Score — ${p.jobName || "(unnamed job)"}`,
+          `Final: ${p.finalScore.toFixed(2)} / 10  →  ${p.decision}`,
+          ``,
+          `Scores: Pay ${p.scores.pay}, Passion ${p.scores.passion}, Problem ${p.scores.problem}, Place ${p.scores.place}, People ${p.scores.people}`,
+          `Weights (normalized %): Pay ${p.weights_normalized.pay}, Passion ${p.weights_normalized.passion}, Problem ${p.weights_normalized.problem}, Place ${p.weights_normalized.place}, People ${p.weights_normalized.people}`,
+        ].join("\n");
+      }
+
+      // ===== Init =====
+      renderInputs();
+      renderOutput();
+
+      $("jobName").addEventListener("input", (e) => {
+        state.jobName = e.target.value || "";
+      });
+
+      $("resetWeights").addEventListener("click", () => {
+        state.weights = { ...DEFAULTS.weights };
+        renderInputs();
+        renderOutput();
+        toast("Weights reset");
+      });
+
+      $("copyJson").addEventListener("click", () => {
+        copyToClipboard(JSON.stringify(getPayload(), null, 2));
+      });
+
+      $("copyText").addEventListener("click", () => {
+        copyToClipboard(getSummaryText());
+      });
+
+      $("clearAll").addEventListener("click", () => {
+        state.jobName = "";
+        state.scores = { ...DEFAULTS.scores };
+        state.weights = { ...DEFAULTS.weights };
+        $("jobName").value = "";
+        renderInputs();
+        renderOutput();
+        toast("Cleared");
+      });
+    </script>
+  </body>
 </html>
